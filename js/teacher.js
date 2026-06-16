@@ -204,18 +204,21 @@ async function loadChatContacts(preselectUid = null) {
     contactsList.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">Loading contacts...</p>';
 
     try {
-        const { data: users, error } = await supabase
-            .from('users')
-            .select('*')
-            .order('last_login_at', { ascending: false });
+        const [{ data: users, error }, { data: admins }] = await Promise.all([
+            supabase.from('users').select('*').order('last_login_at', { ascending: false }),
+            supabase.from('admins').select('email')
+        ]);
 
         if (error) throw error;
+
+        const adminEmails = admins ? admins.map(a => a.email) : [];
+        const filteredUsers = users.filter(u => !adminEmails.includes(u.email) && u.email !== 'debugadmin@example.com');
         
         contactsList.innerHTML = '';
         let preselectDiv = null;
         let preselectArgs = null;
 
-        users.forEach(data => {
+        filteredUsers.forEach(data => {
             const uid = data.id;
             const name = data.name || "Student";
             
@@ -623,16 +626,20 @@ async function loadStudents() {
     window.isRiskFiltered = false;
     
     try {
-        const { data: users, error } = await supabase
-            .from('users')
-            .select('*');
+        const [{ data: users, error }, { data: admins }] = await Promise.all([
+            supabase.from('users').select('*'),
+            supabase.from('admins').select('email')
+        ]);
 
         if (error) throw error;
+
+        const adminEmails = admins ? admins.map(a => a.email) : [];
+        const filteredUsers = users.filter(u => !adminEmails.includes(u.email) && u.email !== 'debugadmin@example.com');
         
         let atRiskCount = 0;
         let atRiskNames = [];
 
-        if (users.length === 0) {
+        if (filteredUsers.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" style="padding: 2rem; text-align: center; color: var(--text-muted);">No students have registered yet.</td></tr>';
             return;
         }
@@ -640,9 +647,9 @@ async function loadStudents() {
         tbody.innerHTML = '';
 
         
-        users.sort((a, b) => new Date(b.last_login_at || 0) - new Date(a.last_login_at || 0));
+        filteredUsers.sort((a, b) => new Date(b.last_login_at || 0) - new Date(a.last_login_at || 0));
 
-        for (const data of users) {
+        for (const data of filteredUsers) {
             const name = data.name || "Student";
             const initial = name.charAt(0).toUpperCase();
 
@@ -765,17 +772,21 @@ async function loadStudents() {
 
 async function fetchStats() {
     try {
-        const [lessonsRes, usersRes, progressRes] = await Promise.all([
+        const [lessonsRes, usersRes, progressRes, adminsRes] = await Promise.all([
             supabase.from('lessons').select('*', { count: 'exact', head: true }),
-            supabase.from('users').select('*', { count: 'exact', head: true }),
-            supabase.from('progress').select('*', { count: 'exact', head: true })
+            supabase.from('users').select('*'),
+            supabase.from('progress').select('*', { count: 'exact', head: true }),
+            supabase.from('admins').select('email')
         ]);
 
         if (lessonsRes.error) throw lessonsRes.error;
         if (usersRes.error) throw usersRes.error;
         if (progressRes.error) throw progressRes.error;
 
-        const totalStudents = usersRes.count || 0;
+        const adminEmails = adminsRes.data ? adminsRes.data.map(a => a.email) : [];
+        const validUsers = usersRes.data.filter(u => !adminEmails.includes(u.email) && u.email !== 'debugadmin@example.com');
+
+        const totalStudents = validUsers.length;
         const totalLessons = lessonsRes.count || 0;
         const totalCompletions = progressRes.count || 0;
 
