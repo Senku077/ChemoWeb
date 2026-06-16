@@ -312,7 +312,12 @@ function setupLoginUI() {
 
     document.getElementById('btn-google').addEventListener('click', async () => {
         console.log("[ChemoWeb Auth] Google Sign-In initiated...");
-        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+        const { error } = await supabase.auth.signInWithOAuth({ 
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin + window.location.pathname
+            }
+        });
         if (error) showError(error);
     });
 
