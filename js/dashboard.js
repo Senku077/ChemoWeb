@@ -40,8 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         try {
                             // Update user metadata with the new name AND name_confirmed flag
-                            await supabase.auth.updateUser({ data: { name: newName, name_confirmed: true } });
-                            await supabase.from('users').update({ name: newName }).eq('id', user.id);
+                            const { error: authErr } = await supabase.auth.updateUser({ data: { name: newName, name_confirmed: true } });
+                            if (authErr) throw authErr;
+                            
+                            const { error: dbErr } = await supabase.from('users').update({ name: newName }).eq('id', user.id);
+                            if (dbErr) {
+                                console.warn("Could not update users table, but auth metadata updated:", dbErr);
+                                // We don't throw here because auth update succeeded, which stops the popup.
+                            }
                             
                             modal.style.display = 'none';
                             
@@ -56,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             btn.disabled = false;
                         } catch (e) {
                             console.error("Error updating name:", e);
+                            alert("Failed to save name: " + (e.message || "Unknown error"));
                             btn.textContent = "Error. Try again.";
                             btn.disabled = false;
                         }
