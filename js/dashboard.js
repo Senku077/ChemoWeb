@@ -7,56 +7,83 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavigation();
 
     
-    supabase.auth.onAuthStateChange((event, session) => {
-        const user = session?.user;
-        if (user) {
-            studentUserId = user.id;
-            let displayName = user.user_metadata?.name || user.user_metadata?.full_name;
-            const emailPrefix = user.email.split('@')[0];
+    const checkNameAndShowModal = (user) => {
+        studentUserId = user.id;
+        let displayName = user.user_metadata?.name || user.user_metadata?.full_name;
+        const emailPrefix = user.email.split('@')[0];
 
-            if (!displayName || displayName === "Student" || displayName === emailPrefix) {
-                const modal = document.getElementById('name-update-modal');
-                const input = document.getElementById('new-full-name');
-                const btn = document.getElementById('save-name-btn');
-                
-                if (modal && input && btn) {
-                    modal.style.display = 'flex';
-                    input.focus();
-                    btn.onclick = async () => {
-                        const newName = input.value.trim();
-                        if (newName) {
-                            btn.textContent = "Saving...";
-                            btn.disabled = true;
-                            
-                            try {
-                                await supabase.auth.updateUser({ data: { name: newName } });
-                                await supabase.from('users').update({ name: newName }).eq('id', user.id);
-                                
-                                modal.style.display = 'none';
-                                
-                                const nameEl = document.getElementById('student-name-display');
-                                if(nameEl) nameEl.textContent = newName;
-                                
-                                const highlightSpan = document.querySelector('.greeting h1 .highlight');
-                                if (highlightSpan) highlightSpan.textContent = newName + "!";
-                            } catch (e) {
-                                console.error("Error updating name:", e);
-                                btn.textContent = "Error. Try again.";
-                                btn.disabled = false;
-                            }
-                        }
-                    };
+        console.log("[ChemoWeb Dashboard] Session user:", user);
+        console.log("[ChemoWeb Dashboard] displayName:", displayName);
+        console.log("[ChemoWeb Dashboard] emailPrefix:", emailPrefix);
+
+        const nameConfirmed = user.user_metadata?.name_confirmed === true;
+
+        if (!nameConfirmed) {
+            console.log("[ChemoWeb Dashboard] Showing name update modal because name_confirmed is false.");
+            const modal = document.getElementById('name-update-modal');
+            const input = document.getElementById('new-full-name');
+            const btn = document.getElementById('save-name-btn');
+            
+            if (modal && input && btn) {
+                modal.style.display = 'flex';
+                // Pre-fill with what we have (e.g. from Google) so they don't have to type it if it's already their real name
+                if (displayName && displayName !== "Student" && displayName !== emailPrefix && displayName !== user.email) {
+                    input.value = displayName;
                 }
-                displayName = emailPrefix;
+                
+                input.focus();
+                btn.onclick = async () => {
+                    const newName = input.value.trim();
+                    if (newName) {
+                        btn.textContent = "Saving...";
+                        btn.disabled = true;
+                        
+                        try {
+                            // Update user metadata with the new name AND name_confirmed flag
+                            await supabase.auth.updateUser({ data: { name: newName, name_confirmed: true } });
+                            await supabase.from('users').update({ name: newName }).eq('id', user.id);
+                            
+                            modal.style.display = 'none';
+                            
+                            const nameEl = document.getElementById('student-name-display');
+                            if(nameEl) nameEl.textContent = newName;
+                            
+                            const highlightSpan = document.querySelector('.greeting h1 .highlight');
+                            if (highlightSpan) highlightSpan.textContent = newName + "!";
+                            
+                            // Re-enable in case they somehow trigger it again
+                            btn.textContent = "Save Name";
+                            btn.disabled = false;
+                        } catch (e) {
+                            console.error("Error updating name:", e);
+                            btn.textContent = "Error. Try again.";
+                            btn.disabled = false;
+                        }
+                    }
+                };
             }
+            // Temporarily use email prefix or existing display name while they confirm
+            displayName = (displayName && displayName !== "Student") ? displayName : emailPrefix;
+        }
 
-            const nameEl = document.getElementById('student-name-display');
-            if(nameEl) {
-                nameEl.textContent = displayName;
-            }
+        const nameEl = document.getElementById('student-name-display');
+        if(nameEl) {
+            nameEl.textContent = displayName;
+        }
 
-            setupStudentChatSystem();
-            fetchLessons(user.id);
+        setupStudentChatSystem();
+        fetchLessons(user.id);
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+            checkNameAndShowModal(session.user);
+        }
+    });
+
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+            checkNameAndShowModal(session.user);
         }
     });
 });

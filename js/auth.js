@@ -294,7 +294,8 @@ function setupLoginUI() {
                 password,
                 options: {
                     data: {
-                        name: displayName
+                        name: displayName,
+                        name_confirmed: true
                     }
                 }
             });
