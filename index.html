@@ -105,7 +105,16 @@
         </main>
     </div>
 
-    
+    <!-- Name Update Modal -->
+    <div id="name-update-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div class="glass-card" style="width: 90%; max-width: 400px; padding: 2rem; text-align: center; border: 1px solid var(--border-subtle); background: var(--bg-glass);">
+            <h2 style="margin-top: 0; color: var(--text-primary);">Welcome!</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Please enter your full name so your teacher can identify you.</p>
+            <input type="text" id="new-full-name" class="modern-input" placeholder="First and Last Name" style="margin-bottom: 1rem; width: 100%; box-sizing: border-box;">
+            <button id="save-name-btn" class="btn btn-primary" style="width: 100%; padding: 0.8rem; background: var(--accent-blue); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Save Name</button>
+        </div>
+    </div>
+
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/dashboard.js"></script>
 </body>

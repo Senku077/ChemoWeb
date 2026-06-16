@@ -11,10 +11,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = session?.user;
         if (user) {
             studentUserId = user.id;
-            
+            let displayName = user.user_metadata?.name || user.user_metadata?.full_name;
+            const emailPrefix = user.email.split('@')[0];
+
+            if (!displayName || displayName === "Student" || displayName === emailPrefix) {
+                const modal = document.getElementById('name-update-modal');
+                const input = document.getElementById('new-full-name');
+                const btn = document.getElementById('save-name-btn');
+                
+                if (modal && input && btn) {
+                    modal.style.display = 'flex';
+                    input.focus();
+                    btn.onclick = async () => {
+                        const newName = input.value.trim();
+                        if (newName) {
+                            btn.textContent = "Saving...";
+                            btn.disabled = true;
+                            
+                            try {
+                                await supabase.auth.updateUser({ data: { name: newName } });
+                                await supabase.from('users').update({ name: newName }).eq('id', user.id);
+                                
+                                modal.style.display = 'none';
+                                
+                                const nameEl = document.getElementById('student-name-display');
+                                if(nameEl) nameEl.textContent = newName;
+                                
+                                const highlightSpan = document.querySelector('.greeting h1 .highlight');
+                                if (highlightSpan) highlightSpan.textContent = newName + "!";
+                            } catch (e) {
+                                console.error("Error updating name:", e);
+                                btn.textContent = "Error. Try again.";
+                                btn.disabled = false;
+                            }
+                        }
+                    };
+                }
+                displayName = emailPrefix;
+            }
+
             const nameEl = document.getElementById('student-name-display');
             if(nameEl) {
-                nameEl.textContent = user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0];
+                nameEl.textContent = displayName;
             }
 
             setupStudentChatSystem();
