@@ -1,0 +1,211 @@
+.breadcrumbs {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.breadcrumbs a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs .separator {
+    margin: 0 0.5rem;
+}
+
+.breadcrumbs .current {
+    color: var(--text-primary);
+}
+
+.lesson-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1.5rem;
+}
+
+.lesson-header .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.lesson-section {
+    margin-bottom: 3rem;
+}
+
+.split-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .split-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    .split-layout > * {
+        flex: 1;
+    }
+}
+
+.text-block p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.diagram-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.placeholder-diagram {
+    text-align: center;
+}
+
+.diagram-caption {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.btn-round {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-round:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-cyan);
+}
+.btn-round:active {
+    transform: scale(0.95);
+}
+
+.stat-badge {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.3s ease;
+}
+
+.atom-visual-area {
+    width: 100%;
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    margin: 1rem 0;
+    background: radial-gradient(circle at center, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0) 70%);
+    border-radius: 12px;
+}
+
+.atom-display {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nucleus-2d {
+    width: 48px;
+    height: 48px;
+    background: var(--grad-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.6), inset 0 -4px 8px rgba(0,0,0,0.3);
+}
+
+.electron-shell {
+    position: absolute;
+    border: 1px dashed rgba(6, 182, 212, 0.3);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin-shell 20s linear infinite;
+}
+
+.shell-1 { width: 80px; height: 80px; animation-duration: 15s; }
+.shell-2 { width: 140px; height: 140px; animation-duration: 25s; animation-direction: reverse; }
+.shell-3 { width: 200px; height: 200px; animation-duration: 35s; }
+.shell-4 { width: 260px; height: 260px; animation-duration: 45s; animation-direction: reverse; }
+
+.electron-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.electron {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-blue);
+}
+
+@keyframes spin-shell {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+
+.math-block {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    margin: 1.5rem 0;
+    text-align: center;
+    font-size: 1.5rem;
+    overflow-x: auto;
+}
+
+.lesson-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}

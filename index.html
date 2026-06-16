@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if (window.trustedTypes && window.trustedTypes.createPolicy) {
+            try {
+                window.trustedTypes.createPolicy('default', {
+                    createHTML: (string) => string,
+                    createScript: (string) => string,
+                    createScriptURL: (string) => string,
+                });
+            } catch (e) {
+                console.warn("Trusted Types default policy could not be registered:", e);
+            }
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChemoWeb - Dashboard</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">ChemoWeb</div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-item active">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard
+                </a></li>
+                <li><a href="#" id="nav-lessons" class="nav-item">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2l-5.5 9h11z"/><circle cx="17.5" cy="17.5" r="4.5"/><path d="M3 13.5h8v8H3z"/></svg>
+                    Lessons
+                </a></li>
+                <li><a href="#" id="nav-messages" class="nav-item">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    Messages
+                </a></li>
+            </ul> 
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="greeting">
+                    <h1>Welcome back, <span class="highlight" id="student-name-display">Student</span>!</h1>
+                    <p id="student-subtitle">Let's continue mastering chemistry.</p>
+                </div>
+            </header>
+
+            <section id="tab-dashboard" style="display: block;">
+                <section class="dashboard-grid" style="grid-template-columns: 1fr;">
+                    
+                    <div class="glass-card stat-card" style="padding-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h2>Recent Lessons</h2>
+                                <p style="color: var(--text-secondary); margin-top: 0; font-size: 0.9rem;">Your latest active modules are presented below.</p>
+                            </div>
+                            <button id="view-all-lessons-btn" class="btn" style="background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border-subtle); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer;">View All</button>
+                        </div>
+                        
+                        <div class="lessons-grid" id="lessons-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                            <p style="color: var(--text-muted);">Fetching assignments...</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section id="tab-lessons" style="display: none;">
+                <div class="glass-card stat-card" style="padding-top: 1rem; min-height: calc(100vh - 200px);">
+                    <h2>All Published Lessons</h2>
+                    <p style="color: var(--text-secondary); margin-top: 0; font-size: 0.9rem;">Explore the complete curriculum.</p>
+                    
+                    <div class="lessons-grid" id="all-lessons-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                        <p style="color: var(--text-muted);">Fetching all assignments...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-messages" style="display: none; height: calc(100vh - 150px);">
+                <div class="glass-card" style="display: flex; flex-direction: column; padding: 0; height: 100%; overflow: hidden;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.02); display: flex; align-items: center; gap: 1rem;">
+                        
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--grad-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">T</div>
+                        <div>
+                            <h3 style="margin: 0; color: var(--text-primary);">Course Instructor</h3>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Direct message line open</p>
+                        </div>
+                    </div>
+                    
+                    <div id="student-chat-history" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: rgba(255,255,255,0.01);">
+                        <div style="display: flex; justify-content: center; height: 100%; align-items: center; color: var(--text-muted);">
+                            Connecting to classroom communications...
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 1.5rem; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.8rem; background: rgba(0,0,0,0.02); align-items: center;">
+                        <input type="text" id="student-chat-input" class="admin-input" style="flex: 1; margin: 0; padding: 0.8rem 1rem;" placeholder="Type your reply...">
+                        <button id="btn-student-chat-send" class="btn" style="background: var(--admin-accent); color: white; border: none; padding: 0.8rem 1.5rem; font-weight: 600; border-radius: 8px;">Send</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

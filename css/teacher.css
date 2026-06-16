@@ -1,0 +1,232 @@
+:root {
+  --admin-accent: #0b215c; 
+  --admin-grad: linear-gradient(135deg, #0b215c, #1865f2);
+}
+
+.teacher-sidebar {
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(24, 101, 242, 0.06) 100%);
+    border-right: 1px solid rgba(24, 101, 242, 0.2);
+}
+
+.teacher-logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.teacher-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(20, 191, 150, 0.15); 
+    color: var(--accent-cyan);
+    border-radius: 6px;
+    margin-left: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.admin-stat-card {
+    border-top: 3px solid var(--admin-accent);
+}
+
+.admin-stat-card.border-cyan {
+    border-top: 3px solid var(--accent-cyan);
+}
+
+.admin-stat-card h3 {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.admin-stat-card .value {
+    font-size: 2.5rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.admin-form-panel {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2.5rem;
+}
+
+.admin-form-panel h2 {
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-input {
+    width: 100%;
+    background: rgba(33, 36, 44, 0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.admin-input:focus {
+    border-color: var(--admin-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(24, 101, 242, 0.15);
+}
+
+.admin-input option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.admin-textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.btn-admin {
+    background: var(--admin-grad);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(24, 101, 242, 0.25);
+    transition: all 0.2s;
+}
+
+.btn-admin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(24, 101, 242, 0.4);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: capitalize;
+}
+
+.status-badge.online {
+    background: rgba(0, 166, 81, 0.08);
+    color: var(--accent-green);
+    border: 1px solid rgba(0, 166, 81, 0.2);
+}
+
+.status-badge.offline {
+    background: rgba(94, 101, 115, 0.08);
+    color: var(--text-muted);
+    border: 1px solid rgba(94, 101, 115, 0.15);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.online {
+    background-color: var(--accent-green);
+    animation: statusPulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+.status-dot.offline {
+    background-color: var(--text-muted);
+}
+
+@keyframes statusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 166, 81, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(0, 166, 81, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 166, 81, 0);
+    }
+}
+
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-status-indicator {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-primary);
+    display: block;
+}
+
+.avatar-status-indicator.online {
+    background-color: var(--accent-green);
+    animation: avatarPulse 2.5s infinite;
+}
+
+.avatar-status-indicator.offline {
+    background-color: var(--text-muted);
+}
+
+#student-drawer .avatar-status-indicator {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+    bottom: 0px;
+    right: 0px;
+}
+
+@keyframes avatarPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 166, 81, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 5px rgba(0, 166, 81, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 166, 81, 0);
+    }
+}
+
+.clickable-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-red) !important;
+    box-shadow: 0 4px 12px rgba(250, 62, 62, 0.2) !important;
+}

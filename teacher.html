@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if (window.trustedTypes && window.trustedTypes.createPolicy) {
+            try {
+                window.trustedTypes.createPolicy('default', {
+                    createHTML: (string) => string,
+                    createScript: (string) => string,
+                    createScriptURL: (string) => string,
+                });
+            } catch (e) {
+                console.warn("Trusted Types default policy could not be registered:", e);
+            }
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChemoWeb - Teacher</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/teacher.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar teacher-sidebar">
+            <div class="teacher-logo">ChemoWeb <span class="teacher-badge">ADMIN</span></div>
+            <ul class="nav-links" id="admin-nav">
+                <li><a href="#" id="nav-dashboard" class="nav-item active" style="color: var(--admin-accent)">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard
+                </a></li>
+                <li><a href="#" id="nav-manage" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+                    Manage Lessons
+                </a></li>
+                <li><a href="#" id="nav-students" class="nav-item">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    Students
+                </a></li>
+                <li><a href="#" id="nav-messages" class="nav-item">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    Messages
+                </a></li>
+                <li><a href="#" id="nav-quizzes" class="nav-item">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                    Quizzes
+                </a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content" style="position: relative; overflow-x: hidden;">
+            <header class="header">
+                <div class="greeting">
+                    <h1>Teacher <span class="highlight" style="color: var(--admin-accent); background: none; -webkit-text-fill-color: var(--admin-accent);"></span></h1>
+                    <p id="teacher-subtitle">Manage your students and deploy new chemistry lessons seamlessly.</p>
+                </div>
+            </header>
+
+            
+            
+            
+            <section id="tab-dashboard" class="tab-pane active" style="display: block;">
+                <section class="admin-grid">
+                    <div class="glass-card admin-stat-card">
+                        <h3>Active Students</h3>
+                        <div class="value" id="stat-students">--</div>
+                        <p style="margin:0; font-size: 0.85rem; color: var(--accent-green);">Fetching...</p>
+                    </div>
+                    <div class="glass-card admin-stat-card border-cyan">
+                        <h3>Published Lessons</h3>
+                        <div class="value" id="stat-lessons">--</div>
+                        <p style="margin:0; font-size: 0.85rem;">Interactive modules</p>
+                    </div>
+                </section>
+
+                <div style="display: grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: start;">
+                    
+                    <section class="admin-form-panel" style="padding: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2 style="margin: 0;">Lesson Studio</h2>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Autosaving to preview...</span>
+                        </div>
+
+                        <form id="create-lesson-form">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Lesson Title</label>
+                                    <input type="text" id="lesson-title" class="admin-input" placeholder="e.g. Lewis Structures" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Chemistry Branch</label>
+                                    <select id="lesson-branch" class="admin-input" required>
+                                        <option value="" disabled selected>Select Branch...</option>
+                                        <option value="Organic Chemistry">Organic Chemistry</option>
+                                        <option value="Inorganic Chemistry">Inorganic Chemistry</option>
+                                        <option value="Physical Chemistry">Physical Chemistry</option>
+                                        <option value="Biochemistry">Biochemistry</option>
+                                        <option value="Analytical Chemistry">Analytical Chemistry</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Estimated Time (Mins)</label>
+                                    <input type="number" id="lesson-time" class="admin-input" placeholder="15" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Core Concepts (Comma separated)</label>
+                                    <input type="text" id="lesson-tags-input" class="admin-input" placeholder="e.g. Bonds, Electrons">
+                                    <div id="tags-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="form-group" style="margin-top: 1.5rem;">
+                                <label>Handout URL (Google Drive, Imgur, etc.)</label>
+                                <input type="url" id="lesson-file-url" class="admin-input" placeholder="File/Image URL...">
+                            </div>
+                            
+                            <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 2rem 0;">
+
+                            
+                            <div class="form-group">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <label style="margin: 0; font-size: 1.1rem; color: var(--text-primary);">Lesson Content Blocks</label>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button type="button" id="btn-add-text" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">+ Add Markdown</button>
+                                        <button type="button" id="btn-add-video" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">+ Add YouTube</button>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div id="content-blocks-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                                    
+                                </div>
+                                <p id="no-blocks-warning" style="color: var(--accent-red); font-size: 0.85rem; margin-top: 0.5rem; display: none;">Please add at least one content block.</p>
+                            </div>
+
+                            <div style="margin-top: 2.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div id="publish-status" style="font-size: 0.9rem; font-weight: 500;"></div>
+                                <button type="submit" class="btn-admin" id="publish-btn">Deploy to Classroom</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    
+                    <aside style="position: sticky; top: 2rem;">
+                        <h3 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 1rem; font-family: var(--font-body); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;">Live Card Preview</h3>
+                        
+                        
+                        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 180px;">
+                            <div>
+                                
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <span id="preview-branch" style="font-size: 0.75rem; font-weight: 600; color: var(--brand-secondary); background: rgba(20, 191, 150, 0.1); padding: 0.3rem 0.6rem; border-radius: 4px; text-transform: uppercase;">CHEMISTRY</span>
+                                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">⏱️ <span id="preview-time">--</span> mins</span>
+                                </div>
+
+                                
+                                <h3 id="preview-title" style="margin: 0 0 1rem 0; color: var(--text-primary); font-family: var(--font-heading); font-size: 1.3rem;">Lesson Title</h3>
+                                
+                                
+                                <div id="preview-tags" style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem;">
+                                    <span style="font-size: 0.75rem; color: var(--accent-blue); background: rgba(24, 101, 242, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">#concept</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button disabled class="btn" style="width: 100%; background: var(--grad-primary); color: white; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; opacity: 0.7;">Start Module</button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            
+            
+            
+            <section id="tab-manage" class="tab-pane" style="display: none;">
+                <div class="glass-card" style="padding: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0;">Published Lessons</h2>
+                        <button id="refresh-lessons-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Refresh Database</button>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-subtle); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">
+                                    <th style="padding: 1rem;">Title</th>
+                                    <th style="padding: 1rem;">Branch</th>
+                                    <th style="padding: 1rem;">Time</th>
+                                    <th style="padding: 1rem;">Published On</th>
+                                    <th style="padding: 1rem; text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="manage-lessons-tbody">
+                                <tr><td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">Loading lessons...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            
+            <section id="tab-students" class="tab-pane" style="display: none;">
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="glass-card" style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div id="class-avg-donut" style="position: relative; width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(var(--brand-primary) 0%, rgba(255,255,255,0.1) 0); transition: background 0.5s;">
+                            <div id="class-avg-pct" style="position: absolute; inset: 4px; background: var(--bg-glass); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">0%</div>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1rem; color: var(--text-muted);">Avg. Class Progress</h3>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Calculated from total assignments</p>
+                        </div>
+                    </div>
+                    
+                    <div id="risk-card" class="glass-card clickable-card" style="display: flex; align-items: center; gap: 1.5rem; cursor: pointer; transition: all 0.2s;">
+                        <div style="width: 60px; height: 60px; border-radius: 12px; background: rgba(250, 62, 62, 0.1); color: var(--accent-red); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold;">
+                            ⚠️
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text-primary);"><span id="at-risk-count">0</span> Student Needs Review</h3>
+                            <p id="at-risk-status" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); transition: color 0.2s;">Low activity detected</p>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="glass-card" style="padding: 0; overflow: hidden;">
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table row-hover" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead style="background: rgba(0,0,0,0.02);">
+                                <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">
+                                    <th style="padding: 1.2rem 1.5rem;">Student Identity</th>
+                                    <th style="padding: 1.2rem 1.5rem;">Current Focus</th>
+                                    <th style="padding: 1.2rem 1.5rem;">Last Active</th>
+                                    <th style="padding: 1.2rem 1.5rem; text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-tbody">
+                                <tr><td colspan="4" style="padding: 2rem; text-align: center; color: var(--text-muted);">Loading roster...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            
+            <section id="tab-messages" class="tab-pane" style="display: none;">
+                <div style="display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; height: calc(100vh - 160px);">
+                    
+                    <div class="glass-card" style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column;">
+                        <h3 style="margin-top: 0; margin-bottom: 1rem; color: var(--text-primary);">Classroom Chat</h3>
+                        <div id="chat-contacts-list" style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+                            <p style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">Loading contacts...</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="glass-card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); background: rgba(0,0,0,0.02);">
+                            <h3 id="chat-thread-name" style="margin: 0; color: var(--text-primary);">Select a student to chat</h3>
+                            <p id="chat-thread-email" style="margin: 0; font-size: 0.85rem; color: var(--text-muted);"></p>
+                        </div>
+                        
+                        <div id="chat-thread-history" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: rgba(255,255,255,0.01);">
+                            
+                            <div style="display: flex; justify-content: center; height: 100%; align-items: center; color: var(--text-muted);">
+                                Conversation history will appear here.
+                            </div>
+                        </div>
+                        
+                        <div style="padding: 1.5rem; border-top: 1px solid var(--border-subtle); display: flex; gap: 0.8rem; background: rgba(0,0,0,0.02); align-items: center;">
+                            <input type="text" id="chat-input-text" class="admin-input" style="flex: 1; margin: 0; padding: 0.8rem 1rem;" placeholder="Type your message..." disabled>
+                            <input type="url" id="chat-input-url" class="admin-input" style="width: 250px; margin: 0; padding: 0.8rem 1rem;" placeholder="Attach Link/URL..." title="Send supplementary material" disabled>
+                            <button id="btn-chat-send" class="btn" style="background: var(--admin-accent); color: white; border: none; padding: 0.8rem 1.5rem; font-weight: 600; border-radius: 8px;" disabled>Send</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            
+            <section id="tab-quizzes" class="tab-pane" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+                    
+                    <div class="glass-card">
+                        <h2 id="quiz-form-title" style="margin-top:0; font-family: var(--font-heading); font-size: 1.4rem;">Create New Quiz</h2>
+
+                        
+                        <div style="margin-bottom: 1.2rem;">
+                            <label class="admin-label">Attached Lesson</label>
+                            <select id="quiz-lesson-select" class="admin-input" style="width:100%;">
+                                <option value="">— Select a lesson —</option>
+                            </select>
+                        </div>
+
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="admin-label">Passing Score (%)</label>
+                            <input type="number" id="quiz-passing-score" class="admin-input" min="1" max="100" value="70" style="width:100%;">
+                        </div>
+
+                        
+                        <div style="margin-bottom: 1.2rem;">
+                            <label class="admin-label">Questions</label>
+                            <div style="display: flex; gap: 0.6rem; margin-bottom: 1rem;">
+                                <button type="button" id="btn-add-mcq" class="btn" style="background: rgba(24,101,242,0.1); color:var(--accent-blue); border: 1px solid rgba(24,101,242,0.2); padding: 0.5rem 1rem; font-size: 0.85rem;">+ MCQ</button>
+                                <button type="button" id="btn-add-tf" class="btn" style="background: rgba(20,191,150,0.1); color:var(--brand-secondary); border: 1px solid rgba(20,191,150,0.2); padding: 0.5rem 1rem; font-size: 0.85rem;">+ True/False</button>
+                            </div>
+
+                            <div id="quiz-questions-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                                <p id="no-questions-warning" style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No questions added yet. Use the buttons above.</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.8rem; align-items: center; margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+                            <button id="btn-save-quiz" class="btn" style="background: var(--grad-primary); color: white; padding: 0.8rem 2rem; font-weight: 700; flex: 1;">Publish Quiz</button>
+                            <button id="btn-cancel-quiz-edit" class="btn" style="display:none; background: none; border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 0.8rem 1.2rem;">Cancel Edit</button>
+                        </div>
+                        <p id="quiz-save-status" style="margin-top: 0.8rem; font-size: 0.85rem; color: var(--text-muted); text-align: center;"></p>
+                    </div>
+
+                    
+                    <div class="glass-card" style="padding: 0; overflow: hidden;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin:0; font-family: var(--font-heading);">Published Quizzes</h3>
+                            <button id="refresh-quizzes-btn" class="btn" style="background:none; border:1px solid var(--border-subtle); color:var(--text-muted); padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                                <thead style="background:rgba(0,0,0,0.02);">
+                                    <tr style="border-bottom:1px solid var(--border-subtle); color:var(--text-muted); font-size:0.8rem; text-transform:uppercase;">
+                                        <th style="padding:1rem 1.5rem;">Lesson</th>
+                                        <th style="padding:1rem;">Questions</th>
+                                        <th style="padding:1rem;">Pass %</th>
+                                        <th style="padding:1rem; text-align:right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quizzes-tbody">
+                                    <tr><td colspan="4" style="padding:2rem; text-align:center; color:var(--text-muted);">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            
+            <div id="student-drawer" style="position: fixed; top: 0; right: -500px; width: 450px; height: 100vh; background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 1px solid var(--border-subtle); box-shadow: -10px 0 30px rgba(0,0,0,0.4); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; display: flex; flex-direction: column;">
+                <div style="padding: 2rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="avatar-container">
+                            <div id="drawer-avatar" style="width: 50px; height: 50px; border-radius: 50%; background: var(--grad-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">JD</div>
+                            <span id="drawer-status-indicator" class="avatar-status-indicator offline"></span>
+                            <div id="drawer-risk-indicator" style="display: none; position: absolute; top: -6px; left: -6px; font-size: 1.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); z-index: 2;">⚠️</div>
+                        </div>
+                        <div>
+                            <h2 id="drawer-name" style="margin: 0; font-size: 1.3rem;">Student Name</h2>
+                            <p id="drawer-email" style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">user@email.com</p>
+                        </div>
+                    </div>
+                    <button id="close-drawer-btn" style="background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">✕</button>
+                </div>
+                
+                <div style="padding: 2rem; flex: 1; overflow-y: auto;">
+                    <h3 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem;">Topic Mastery</h3>
+                    
+                    
+                    <div data-mastery-container style="margin-bottom: 2.5rem;">
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Loading mastery data...</p>
+                    </div>
+
+                    <h3 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem;">Recent Activity Log</h3>
+                    <div id="drawer-activity-log" style="border-left: 2px solid var(--border-subtle); padding-left: 1rem; margin-left: 0.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: -21px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-cyan); border: 2px solid var(--bg-card);"></div>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Last login to platform</p>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);"><span id="drawer-active-ago"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="drawer-action-buttons" style="padding: 2rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.8rem;">
+                    <button class="btn btn-secondary" id="btn-open-dm" style="width: 100%; text-align: left; padding: 0.8rem 1rem;">💬 Message Student</button>
+                    <button class="btn" id="btn-reset-progress" style="width: 100%; background: rgba(250, 62, 62, 0.1); color: var(--accent-red); border: 1px solid rgba(250, 62, 62, 0.2); text-align: left; padding: 0.8rem 1rem;">🔄 Reset Lesson Progress</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/teacher.js"></script>
+</body>
+</html>

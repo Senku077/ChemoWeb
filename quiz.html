@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if (window.trustedTypes && window.trustedTypes.createPolicy) {
+            try {
+                window.trustedTypes.createPolicy('default', {
+                    createHTML: (string) => string,
+                    createScript: (string) => string,
+                    createScriptURL: (string) => string,
+                });
+            } catch (e) {
+                console.warn("Trusted Types default policy could not be registered:", e);
+            }
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChemoWeb - Quiz</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/quiz.css">
+</head>
+<body>
+    <div class="app-layout">
+        
+        <aside class="sidebar">
+            <div class="sidebar-logo">ChemoWeb</div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard
+                </a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content quiz-container">
+            
+            <div class="quiz-header">
+                <a href="#" id="back-to-lesson" class="back-link">← Back to Lesson</a>
+                <div class="quiz-progress">
+                    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%;"></div></div>
+                    <span id="question-counter">Loading...</span>
+                </div>
+            </div>
+
+            
+            <div class="quiz-content glass-card" id="quiz-container">
+                <div id="loading-state" style="text-align: center; padding: 3rem;">
+                    <p style="color: var(--text-muted);">Loading quiz...</p>
+                </div>
+                <div id="no-quiz-state" style="text-align: center; padding: 3rem; display: none;">
+                    <h3 style="color: var(--text-primary);">No Quiz Available</h3>
+                    <p style="color: var(--text-muted);">Your teacher hasn't created a quiz for this lesson yet.</p>
+                </div>
+                <div id="quiz-questions" style="display: none;">
+                    <h2 id="quiz-title">Knowledge Check</h2>
+                    <div class="question-prompt" id="question-prompt">
+                        
+                    </div>
+                    <div class="interactive-area" id="interactive-area">
+                        
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    
+    <div class="feedback-modal" id="feedback-modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modal-icon"></div>
+            <div class="modal-text">
+                <h3 id="modal-title">Checking...</h3>
+                <p id="modal-body">Please wait.</p>
+            </div>
+            <button class="btn btn-primary" id="continue-btn" style="display: none;">Continue</button>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/quiz.js"></script>
+</body>
+</html>
